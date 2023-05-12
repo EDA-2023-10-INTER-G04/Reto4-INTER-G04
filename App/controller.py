@@ -36,17 +36,35 @@ def new_controller():
     Crea una instancia del modelo
     """
     #TODO: Llamar la función del modelo que crea las estructuras de datos
-    pass
+    return model.new_data_structs()
 
 
 # Funciones para la carga de datos
 
-def load_data(control, filename):
+def load_data(control, filename, archind):
     """
     Carga los datos del reto
     """
-    # TODO: Realizar la carga de datos
-    pass
+    if filename== 1:
+        filename = "BA-Grey-Wolf-tracks-utf8-small.csv"
+    elif filename==2:
+        filename = "BA-Grey-Wolf-tracks-utf8-5pct.csv"
+    elif filename==3:
+        filename = "BA-Grey-Wolf-tracks-utf8-10pct.csv"
+    elif filename==4:
+        filename = "BA-Grey-Wolf-tracks-utf8-20pct.csv"
+    elif filename==5:
+        filename = "BA-Grey-Wolf-tracks-utf8-30pct.csv"
+    elif filename==6:
+        filename = "BA-Grey-Wolf-tracks-utf8-50pct.csv"
+    elif filename==7:
+        filename = "BA-Grey-Wolf-tracks-utf8-80pct.csv"
+    elif filename==8:
+        filename = "BA-Grey-Wolf-tracks-utf8-large.csv"
+    datafile = cf.data_dir + archind
+    data = csv.DictReader(open(datafile, encoding="utf-8"))
+    for info in data:
+        model.add_ind(control["Individuo"], info)
 
 
 # Funciones de ordenamiento

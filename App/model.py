@@ -61,11 +61,30 @@ def new_data_structs():
     Inicializa las estructuras de datos del modelo. Las crea de
     manera vacía para posteriormente almacenar la información.
     """
-    #TODO: Inicializar las estructuras de datos
-    pass
+    control = {"TracksD": None,"TracksND":None, "Individuo": None}
+    
+    control["Individuo"]= mp.newMap(97, 
+                                    maptype='PROBING',
+                                    loadfactor=0.5,
+                                    cmpfunction=compareID)
+    return control
 
-
+def compareID(dato1, dato2):
+    tag1 = int(dato1["tag-id"])
+    tag2 = int(dato2["tag-id"])
+    if tag1>tag2:
+        return 1
+    elif tag1== tag2:
+        return 0
+    else:
+        return -1
 # Funciones para agregar informacion al modelo
+
+def add_ind(data_structs, data):
+    map = data_structs["Individuo"]
+    key = data["tag-id"]
+    mp.put(map, key, data)
+    
 
 def add_data(data_structs, data):
     """
