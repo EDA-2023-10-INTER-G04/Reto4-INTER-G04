@@ -61,12 +61,22 @@ def new_data_structs():
     Inicializa las estructuras de datos del modelo. Las crea de
     manera vacía para posteriormente almacenar la información.
     """
+    
+    # TraksD = Grafo Dirigido
+    # TracksND = Grafo No Dirigido
+    
     control = {"TracksD": None,"TracksND":None, "Individuo": None}
     
     control["Individuo"]= mp.newMap(97, 
                                     maptype='PROBING',
                                     loadfactor=0.5,
                                     cmpfunction=compareID)
+    
+    control["TracksD"] = gr.newGraph(datastructure='ADJ_LIST',
+                                    directed=True,
+                                    size=xxxx,
+                                    cmpfunction=funciondecomparación)
+    
     return control
 
 def compareID(dato1, dato2):
@@ -74,7 +84,7 @@ def compareID(dato1, dato2):
     tag2 = int(dato2["tag-id"])
     if tag1>tag2:
         return 1
-    elif tag1== tag2:
+    elif tag1 == tag2:
         return 0
     else:
         return -1
