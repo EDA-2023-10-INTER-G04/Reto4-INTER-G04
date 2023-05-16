@@ -46,7 +46,7 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
-import math
+import datetime
 assert cf
 
 """
@@ -66,17 +66,29 @@ def new_data_structs():
     # TraksD = Grafo Dirigido
     # TracksND = Grafo No Dirigido
     
-    control = {"TracksD": None,"TracksND": None, "Individuo": None}
+    control = {"TracksD": None,"TracksND": None, "Individuo": None, "MTPs": None, "Tracks": None}
     
     control["Individuo"]= mp.newMap(97, 
                                     maptype='PROBING',
                                     loadfactor=0.5,
                                     cmpfunction=compareID)
     
-    control["TracksD"] = gr.newGraph(datastructure='ADJ_LIST',
+    control["TracksMap"]= mp.newMap(100000, 
+                                    maptype='PROBING',
+                                    loadfactor=0.5,
+                                    cmpfunction=compareID) 
+    
+    control["TracksGraph"] = gr.newGraph(datastructure='ADJ_LIST',
                                     directed=True,
                                     size=10000000,
                                     cmpfunction=None)
+    
+    control["TracksTree"] = om.newMap(omaptype="RBT",
+                                  cmpfunction= None)
+    
+    control["MTPs"] = om.newMap(omaptype="RBT",
+                                  cmpfunction= None)
+    
     
     return control
 
@@ -89,8 +101,52 @@ def add_ind(data_structs, data):
     key = data["tag-id"]
     mp.put(map, key, data)
 
+def add_edges(control):
+    for lobo in lt.iterator(mp.keySet(control["TracksMap"])):
+        entry = mp.get(control["TracksMap"], lobo)
+        if entry:
+            recorridos = me.getValue(entry)
+            recorridos = mpqlist(recorridos)
+            for i in range(1, lt.size(recorridos)-1):
+                data1 = lt.getElement(recorridos, i)
+                data2 = lt.getElement(recorridos, i-1)
+                id1 = (puntos_de_seguimiento(data1))
+                id2 = (puntos_de_seguimiento(data2))
+                if id1 not in control["MTPs"]:
+                    id1 = id1+"_"+data1["individual-local-identifier"]
+                if id2 not in control["MTPs"]:
+                    id2 = id2+"_"+data2["individual-local-identifier"]
+                if id1 != id2:
+                    gr.addEdge(control["TracksGraph"], id1, id2, 0)
 
-#def add_track(data_structs, data):
+def mpqlist(minpq):
+    lista = lt.newList()
+    while not (mpq.isEmpty(minpq)):
+        minn = mpq.delMin(minpq)
+        lt.addLast(lista, minn)
+    return lista
+
+def add_vertex(control, track):
+    identificador = puntos_de_seguimiento(track["location-long"], track["location-lat"])
+    if om.contains(control["TracksTree"], identificador) and not (om.contains(control["MTPs"])):
+        gr.insertVertex(control["TracksGraph"], identificador)
+    elif not(om.contains(control["MTPs"])):
+        gr.insertVertex(control["TracksGraph"], (identificador+ "_" + track["individual-local-identifier"]))
+
+def add_tracks(track, control):
+    identificador = puntos_de_seguimiento(track["location-long"], track["location-lat"])
+    if om.contains(control["TracksTree"], identificador) and not (om.contains(control["MTPs"])):
+        om.put(control["MTPs"], identificador, None)
+    om.put(control["TracksTree"], identificador, None)
+    lobo = mp.get(control["TracksMap"], track["individual-local-identifier"])
+    if lobo:
+        recorrido = me.getValue(lobo)
+    else:
+        recorrido = mpq.newMinPQ(cmp_fecha2)
+    mpq.insert(recorrido, track)
+    mp.put(control["TracksMap"], track["individual-local-identifier"], recorrido)
+
+    
     
     
 
@@ -111,11 +167,11 @@ def new_data(id, info):
     #TODO: Crear la función para estructurar los datos
     pass
 
-def puntos_de_seguimiento(longitud, latitud, ind_loc_ident):
-    longitud = math.ceil(round(longitud, 4))
-    latitud = math.ceil(round(latitud, 4))
+def puntos_de_seguimiento(longitud, latitud):
+    longitud = round(longitud, 4)
+    latitud = round(latitud, 4)
     
-    id_comp = str(longitud)+"_"+str(latitud)+"_"+str(ind_loc_ident) 
+    id_comp = str(longitud)+"_"+str(latitud)
 
     id_comp.replace(".", "p")
     id_comp.replace("-", "m")
@@ -242,7 +298,12 @@ def compareID(dato1, dato2):
     else:
         return -1
 
-
+def cmp_fecha2(data_1, data_2):
+    occurreddate1 = data_1["timestamp"]
+    crimedate1 = datetime.datetime.strptime(occurreddate1.replace("+00",""), "%Y-%m-%d %H:%M")
+    occurreddate2 = data_2["timestamp"]
+    crimedate2 = datetime.datetime.strptime(occurreddate2.replace("+00",""), "%Y-%m-%d %H:%M")
+    return crimedate1 < crimedate2
 
 def sort(data_structs):
     """
