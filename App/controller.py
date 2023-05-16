@@ -80,7 +80,11 @@ def load_data(control, file):
         model.add_ind(control["Individuo"], info)
     
     for info in tracks_data:
-        model.add_(control["", info])
+        model.add_tracks(control, info)
+        
+    for info in tracks_data:
+        model.add_vertex(control, info)
+    model.add_edges(control)
         
         
     
