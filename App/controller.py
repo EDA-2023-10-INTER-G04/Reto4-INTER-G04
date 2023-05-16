@@ -41,30 +41,49 @@ def new_controller():
 
 # Funciones para la carga de datos
 
-def load_data(control, filename, archind):
+def load_data(control, file):
     """
     Carga los datos del reto
     """
-    if filename== 1:
-        filename = "BA-Grey-Wolf-tracks-utf8-small.csv"
-    elif filename==2:
-        filename = "BA-Grey-Wolf-tracks-utf8-5pct.csv"
-    elif filename==3:
-        filename = "BA-Grey-Wolf-tracks-utf8-10pct.csv"
-    elif filename==4:
-        filename = "BA-Grey-Wolf-tracks-utf8-20pct.csv"
-    elif filename==5:
-        filename = "BA-Grey-Wolf-tracks-utf8-30pct.csv"
-    elif filename==6:
-        filename = "BA-Grey-Wolf-tracks-utf8-50pct.csv"
-    elif filename==7:
-        filename = "BA-Grey-Wolf-tracks-utf8-80pct.csv"
-    elif filename==8:
-        filename = "BA-Grey-Wolf-tracks-utf8-large.csv"
-    datafile = cf.data_dir + archind
-    data = csv.DictReader(open(datafile, encoding="utf-8"))
-    for info in data:
+    if file == 1:
+        tracks = "BA-Grey-Wolf-tracks-utf8-small.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-small.csv"
+    elif file ==2:
+        tracks = "BA-Grey-Wolf-tracks-utf8-5pct.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-5pct.csv"
+    elif file ==3:
+        tracks = "BA-Grey-Wolf-tracks-utf8-10pct.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-10pct.csv"
+    elif file ==4:
+        tracks = "BA-Grey-Wolf-tracks-utf8-20pct.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-20pct.csv"
+    elif file ==5:
+        tracks = "BA-Grey-Wolf-tracks-utf8-30pct.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-30pct.csv"
+    elif file ==6:
+        tracks = "BA-Grey-Wolf-tracks-utf8-50pct.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-50pct.csv"
+    elif file == 7:
+        tracks = "BA-Grey-Wolf-tracks-utf8-80pct.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-80pct.csv"
+    elif file == 8:
+        tracks = "BA-Grey-Wolf-tracks-utf8-large.csv"
+        individuals = "BA-Grey-Wolf-individuals-utf8-large.csv"
+        
+    datafile_individuals = cf.data_dir + individuals
+    individuals_data = csv.DictReader(open(datafile_individuals, encoding="utf-8"))
+    
+    datafile_tracks = cf.data_dir + tracks
+    tracks_data = csv.DictReader(open(datafile_tracks, encoding="utf-8"))
+    
+    for info in individuals_data:
         model.add_ind(control["Individuo"], info)
+    
+    for info in tracks_data:
+        model.add_(control["", info])
+        
+        
+    
 
 
 # Funciones de ordenamiento
@@ -178,7 +197,7 @@ def delta_memory(stop_memory, start_memory):
     calcula la diferencia en memoria alocada del programa entre dos
     instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
     """
-    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    memory_diff = stop_memory.compare_to(start_memory, "file")
     delta_memory = 0.0
 
     # suma de las diferencias en uso de memoria

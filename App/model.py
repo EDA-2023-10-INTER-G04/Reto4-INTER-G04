@@ -46,6 +46,7 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
+import math
 assert cf
 
 """
@@ -65,7 +66,7 @@ def new_data_structs():
     # TraksD = Grafo Dirigido
     # TracksND = Grafo No Dirigido
     
-    control = {"TracksD": None,"TracksND":None, "Individuo": None}
+    control = {"TracksD": None,"TracksND": None, "Individuo": None}
     
     control["Individuo"]= mp.newMap(97, 
                                     maptype='PROBING',
@@ -74,26 +75,23 @@ def new_data_structs():
     
     control["TracksD"] = gr.newGraph(datastructure='ADJ_LIST',
                                     directed=True,
-                                    size=xxxx,
-                                    cmpfunction=funciondecomparación)
+                                    size=10000000,
+                                    cmpfunction=None)
     
     return control
 
-def compareID(dato1, dato2):
-    tag1 = int(dato1["tag-id"])
-    tag2 = int(dato2["tag-id"])
-    if tag1>tag2:
-        return 1
-    elif tag1 == tag2:
-        return 0
-    else:
-        return -1
+
+
 # Funciones para agregar informacion al modelo
 
 def add_ind(data_structs, data):
     map = data_structs["Individuo"]
     key = data["tag-id"]
     mp.put(map, key, data)
+
+
+#def add_track(data_structs, data):
+    
     
 
 def add_data(data_structs, data):
@@ -113,6 +111,18 @@ def new_data(id, info):
     #TODO: Crear la función para estructurar los datos
     pass
 
+def puntos_de_seguimiento(longitud, latitud, ind_loc_ident):
+    longitud = math.ceil(round(longitud, 4))
+    latitud = math.ceil(round(latitud, 4))
+    
+    id_comp = str(longitud)+"_"+str(latitud)+"_"+str(ind_loc_ident) 
+
+    id_comp.replace(".", "p")
+    id_comp.replace("-", "m")
+    
+    return id_comp
+
+    
 
 # Funciones de consulta
 
@@ -220,6 +230,18 @@ def sort_criteria(data_1, data_2):
     """
     #TODO: Crear función comparadora para ordenar
     pass
+
+
+def compareID(dato1, dato2):
+    tag1 = int(dato1["tag-id"])
+    tag2 = int(dato2["tag-id"])
+    if tag1>tag2:
+        return 1
+    elif tag1 == tag2:
+        return 0
+    else:
+        return -1
+
 
 
 def sort(data_structs):
