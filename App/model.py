@@ -149,10 +149,7 @@ def puntos_de_seguimiento(longitud, latitud):
     longitud = round(float(longitud), 3)
     latitud = round(float(latitud), 3)
     
-    id_comp = str(longitud)+"_"+str(latitud)
-
-    id_comp.replace(".", "p")
-    id_comp.replace("-", "m")
+    id_comp = (str(longitud)+"_"+str(latitud)).replace(".", "p").replace("-", "m")
     
     return id_comp
 
