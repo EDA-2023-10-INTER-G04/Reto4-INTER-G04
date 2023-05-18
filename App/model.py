@@ -69,7 +69,7 @@ def new_data_structs():
     
     control["tracksD"] = gr.newGraph(datastructure="ADJ_LIST", directed=True)
     control["tracksND"] = gr.newGraph(datastructure="ADJ_LIST", directed=False)
-    control["tabla_hash"] = mp.newMap(numelements=100, maptype="CHAINING", loadfactor=4)
+    control["mapa_eventos"] = mp.newMap(numelements=100, maptype="CHAINING", loadfactor=4)
     
     # TracksND = Grafo No Dirigido
     
@@ -95,7 +95,7 @@ def anadir_nodos(data_structs):
     Crea una nueva estructura para modelar los datos
     """
     grafoD = data_structs["tracksD"]
-    mapa_hash = data_structs["tabla_hash"]
+    mapa_hash = data_structs["mapa_eventos"]
     llaves = mp.keys(mapa_hash)
     
     for llave in lt.iterator(llaves):
