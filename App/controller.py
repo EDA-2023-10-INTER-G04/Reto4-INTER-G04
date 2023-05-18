@@ -83,9 +83,11 @@ def load_data(control, file):
         posicion = model.puntos_de_seguimiento(info["location-long"], info["location-lat"])
         individuo = model.identificador_compuesto(info["individual-local-identifier"], info["tag-local-identifier"])
         if mp.contains(control["mapa_eventos"], posicion):
+            
             pareja = mp.get(control["mapa_eventos"], posicion)
             lista = me.getValue(pareja)
-            lt.addLast(lista, individuo)    
+            if lt.isPresent(lista, individuo) == 0:
+                lt.addLast(lista, individuo)    
         else:
             temp_lista = lt.newList(datastructure="ARRAY_LIST")
             lt.addLast(temp_lista, individuo)
@@ -99,11 +101,13 @@ def load_data(control, file):
             temp_lista = lt.newList(datastructure="ARRAY_LIST")
             lt.addLast(temp_lista, info)
             mp.put(control["mapa_arcos"], individuo, temp_lista)
-            
-    vertices = model.anadir_nodos(control)
-    #edges = model.anadir_arcos(control)
     
-    return vertices, 1
+    x = model.anadir_nodos(control)
+    vertices = x[0]
+    MTPs = x[1]
+    edges = model.anadir_arcos(control)
+    
+    return vertices, MTPs, edges
         
         
     

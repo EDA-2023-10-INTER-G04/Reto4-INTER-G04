@@ -72,6 +72,7 @@ def load_data(control):
     x = controller.load_data(control, resp)
     print(x[0])
     print(x[1])
+    print(x[2])
 
 
 def print_data(control, id):
