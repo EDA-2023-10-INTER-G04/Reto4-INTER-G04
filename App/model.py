@@ -118,13 +118,13 @@ def anadir_arcos(data_structs):
     """
     grafoD = data_structs["tracksD"]
     mapa_hash = data_structs["mapa_arcos"]
-    llaves = mp.keys(mapa_hash)
+    llaves = mp.keySet(mapa_hash)
 
     for llave in lt.iterator(llaves):
         pareja = mp.get(mapa_hash, llave)
         tracks = me.getValue(pareja)
         
-        quk.quicksort(tracks, sort_crit=cmp_fecha2)
+        quk.sort(tracks, cmp_fecha2)
         
         for i in range(1, lt.size(tracks)):
             event1 = lt.getElement(tracks, i)
