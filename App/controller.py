@@ -25,6 +25,9 @@ import model
 import time
 import csv
 import tracemalloc
+from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import list as lt
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -76,15 +79,21 @@ def load_data(control, file):
     datafile_tracks = cf.data_dir + tracks
     tracks_data = csv.DictReader(open(datafile_tracks, encoding="utf-8"))
     
-    for info in individuals_data:
-        model.add_ind(control["Individuo"], info)
+    for info in tracks_data:
+        posicion = model.puntos_de_seguimiento(info["location-long"], info["location-lat"])
+        individuo = model.identificador_compuesto(info["individual-local-identifier"], info["tag-local-identifier"])
+        if mp.contains(control["tabla_hash"], posicion):
+            pareja = mp.get(control["tabla_hash"], posicion)
+            lista = me.getValue(pareja)
+            lt.addLast(lista, individuo)
+        else:
+            temp_lista = lt.newList(datastructure="ARRAY_LIST")
+            lt.addLast(individuo)
+            mp.put(control["tabla_hash"], posicion, temp_lista)
+            
     
-    for info in tracks_data:
-        model.add_tracks(control, info)
-        
-    for info in tracks_data:
-        model.add_vertex(control, info)
-    model.add_edges(control)
+    
+    return control
         
         
     

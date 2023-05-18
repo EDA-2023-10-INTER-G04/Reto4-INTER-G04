@@ -64,31 +64,14 @@ def new_data_structs():
     """
     
     # TraksD = Grafo Dirigido
+    
+    control = {}
+    
+    control["tracksD"] = gr.newGraph(datastructure="ADJ_LIST", directed=True)
+    control["tracksND"] = gr.newGraph(datastructure="ADJ_LIST", directed=False)
+    control["tabla_hash"] = mp.newMap(numelements=100, maptype="CHAINING", loadfactor=4)
+    
     # TracksND = Grafo No Dirigido
-    
-    control = {"TracksD": None,"TracksND": None, "Individuo": None, "MTPs": None, "Tracks": None}
-    
-    control["Individuo"]= mp.newMap(97, 
-                                    maptype='PROBING',
-                                    loadfactor=0.5,
-                                    cmpfunction=compareID)
-    
-    control["TracksMap"]= mp.newMap(100000, 
-                                    maptype='PROBING',
-                                    loadfactor=0.5,
-                                    cmpfunction=compareID) 
-    
-    control["TracksGraph"] = gr.newGraph(datastructure='ADJ_LIST',
-                                    directed=True,
-                                    size=10000000,
-                                    cmpfunction=None)
-    
-    control["TracksTree"] = om.newMap(omaptype="RBT",
-                                  cmpfunction= None)
-    
-    control["MTPs"] = om.newMap(omaptype="RBT",
-                                  cmpfunction= None)
-    
     
     return control
 
@@ -96,59 +79,6 @@ def new_data_structs():
 
 # Funciones para agregar informacion al modelo
 
-def add_ind(data_structs, data):
-    map = data_structs["Individuo"]
-    key = data["tag-id"]
-    mp.put(map, key, data)
-
-def add_edges(control):
-    for lobo in lt.iterator(mp.keySet(control["TracksMap"])):
-        entry = mp.get(control["TracksMap"], lobo)
-        if entry:
-            recorridos = me.getValue(entry)
-            recorridos = mpqlist(recorridos)
-            for i in range(1, lt.size(recorridos)-1):
-                data1 = lt.getElement(recorridos, i)
-                data2 = lt.getElement(recorridos, i-1)
-                id1 = (puntos_de_seguimiento(data1))
-                id2 = (puntos_de_seguimiento(data2))
-                if id1 not in control["MTPs"]:
-                    id1 = id1+"_"+data1["individual-local-identifier"]
-                if id2 not in control["MTPs"]:
-                    id2 = id2+"_"+data2["individual-local-identifier"]
-                if id1 != id2:
-                    gr.addEdge(control["TracksGraph"], id1, id2, 0)
-
-def mpqlist(minpq):
-    lista = lt.newList()
-    while not (mpq.isEmpty(minpq)):
-        minn = mpq.delMin(minpq)
-        lt.addLast(lista, minn)
-    return lista
-
-def add_vertex(control, track):
-    identificador = puntos_de_seguimiento(track["location-long"], track["location-lat"])
-    if om.contains(control["TracksTree"], identificador) and not (om.contains(control["MTPs"])):
-        gr.insertVertex(control["TracksGraph"], identificador)
-    elif not(om.contains(control["MTPs"])):
-        gr.insertVertex(control["TracksGraph"], (identificador+ "_" + track["individual-local-identifier"]))
-
-def add_tracks(track, control):
-    identificador = puntos_de_seguimiento(track["location-long"], track["location-lat"])
-    if om.contains(control["TracksTree"], identificador) and not (om.contains(control["MTPs"])):
-        om.put(control["MTPs"], identificador, None)
-    om.put(control["TracksTree"], identificador, None)
-    lobo = mp.get(control["TracksMap"], track["individual-local-identifier"])
-    if lobo:
-        recorrido = me.getValue(lobo)
-    else:
-        recorrido = mpq.newMinPQ(cmp_fecha2)
-    mpq.insert(recorrido, track)
-    mp.put(control["TracksMap"], track["individual-local-identifier"], recorrido)
-
-    
-    
-    
 
 def add_data(data_structs, data):
     """
@@ -160,16 +90,30 @@ def add_data(data_structs, data):
 
 # Funciones para creacion de datos
 
-def new_data(id, info):
+def anadir_nodos(data_structs):
     """
     Crea una nueva estructura para modelar los datos
     """
-    #TODO: Crear la función para estructurar los datos
-    pass
-
+    grafoD = data_structs["tracksD"]
+    mapa_hash = data_structs["tabla_hash"]
+    llaves = mp.keys(mapa_hash)
+    
+    for llave in lt.iterator(llaves):
+        pareja = mp.get(mapa_hash, llave)
+        lista = me.getValue(pareja)
+        
+        if lt.size(lista) > 1:
+            gr.insertVertex(grafoD, llave)
+        else:
+            lobo = lt.getElement(lista, 1)
+            nueva_llave = str(llave)+"_"+str(lobo)
+            gr.insertVertex(grafoD, nueva_llave)
+    
+    
+    
 def puntos_de_seguimiento(longitud, latitud):
-    longitud = round(longitud, 4)
-    latitud = round(latitud, 4)
+    longitud = round(longitud, 3)
+    latitud = round(latitud, 3)
     
     id_comp = str(longitud)+"_"+str(latitud)
 
@@ -178,7 +122,10 @@ def puntos_de_seguimiento(longitud, latitud):
     
     return id_comp
 
-    
+def identificador_compuesto(individual, tag):
+    compuesto = individual+"_"+tag
+    return compuesto
+
 
 # Funciones de consulta
 
