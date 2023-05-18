@@ -97,8 +97,7 @@ def anadir_nodos(data_structs):
     """
     grafoD = data_structs["tracksD"]
     mapa_hash = data_structs["mapa_eventos"]
-    llaves = mp.keys(mapa_hash)
-    
+    llaves = mp.keySet(mapa_hash)
     for llave in lt.iterator(llaves):
         pareja = mp.get(mapa_hash, llave)
         lista = me.getValue(pareja)
@@ -138,7 +137,7 @@ def anadir_arcos(data_structs):
             if not(gr.containsVertex(grafoD, id2)):
                 id2 = id2+"_"+id_compuesto2
             if id1 != id2:
-                gr.addEdge(grafoD, id1, id1, weight=0)
+                gr.addEdge(grafoD, id1, id2, weight=0)
             
         
         

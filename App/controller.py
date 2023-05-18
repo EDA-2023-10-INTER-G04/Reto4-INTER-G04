@@ -101,7 +101,9 @@ def load_data(control, file):
             temp_lista = lt.newList(datastructure="ARRAY_LIST")
             lt.addLast(temp_lista, info)
             mp.put(control["mapa_arcos"], individuo, temp_lista)
+    model.anadir_nodos(control)
     model.anadir_arcos(control)
+    
     return control
         
         
