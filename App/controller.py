@@ -79,6 +79,8 @@ def load_data(control, file):
     datafile_tracks = cf.data_dir + tracks
     tracks_data = csv.DictReader(open(datafile_tracks, encoding="utf-8"))
     
+    
+    
     for info in tracks_data:
         posicion = model.puntos_de_seguimiento(info["location-long"], info["location-lat"])
         individuo = model.identificador_compuesto(info["individual-local-identifier"], info["tag-local-identifier"])

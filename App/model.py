@@ -122,13 +122,28 @@ def anadir_arcos(data_structs):
 
     for llave in lt.iterator(llaves):
         pareja = mp.get(mapa_hash, llave)
-        lobos = me.getValue(pareja)
+        tracks = me.getValue(pareja)
         
-        quk.quicksort(lobos, sort_crit=cmp_fecha2)
+        quk.quicksort(tracks, sort_crit=cmp_fecha2)
         
-    i = 0
-    
-    while i < lt.size(lobos)
+        for i in range(1, lt.size(tracks)):
+            event1 = lt.getElement(tracks, i)
+            event2 = lt.getElement(tracks, i+1)
+            id1 = puntos_de_seguimiento(event1["location-long"], event1["location-lat"])
+            id_compuesto1 = identificador_compuesto(event1["individual-local-identifier"], event1["tag-local-identifier"])
+            lobos_en_id1 = mp.get(data_structs["mapa_eventos"], id_compuesto1)
+            lobos_id1 = me.getValue(lobos_en_id1)
+            id2 = puntos_de_seguimiento(event2["location-long"], event2["location-lat"])
+            id_compuesto2 = identificador_compuesto(event2["individual-local-identifier"], event2["tag-local-identifier"])
+            lobos_en_id2 = mp.get(data_structs["mapa_eventos"], id_compuesto2)
+            lobos_id2 = me.getValue(lobos_en_id2)
+            if lt.size(lobos_id1) <= 1:
+                id1 = id1+"_"+id_compuesto1
+            if lt.size(lobos_id2) <= 1:
+                id2 = id2+"_"+id_compuesto2
+            if id1 != id2:
+                gr.addEdge(grafoD, id1, id1, weight=0)
+            
         
         
     
@@ -136,8 +151,8 @@ def anadir_arcos(data_structs):
     
     
 def puntos_de_seguimiento(longitud, latitud):
-    longitud = round(longitud, 3)
-    latitud = round(latitud, 3)
+    longitud = round(float(longitud), 3)
+    latitud = round(float(latitud), 3)
     
     id_comp = str(longitud)+"_"+str(latitud)
 
