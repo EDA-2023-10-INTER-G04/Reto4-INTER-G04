@@ -96,18 +96,17 @@ def anadir_nodos(data_structs):
     Crea una nueva estructura para modelar los datos
     """
     grafoD = data_structs["tracksD"]
-    mapa_hash = data_structs["mapa_eventos"]
+    mapa_hash = data_structs["mapa_arcos"]
     llaves = mp.keySet(mapa_hash)
     for llave in lt.iterator(llaves):
         pareja = mp.get(mapa_hash, llave)
         lista = me.getValue(pareja)
-        
-        if lt.size(lista) > 1:
-            gr.insertVertex(grafoD, llave)
-        else:
-            lobo = lt.getElement(lista, 1)
-            nueva_llave = str(llave)+"_"+str(lobo)
-            gr.insertVertex(grafoD, nueva_llave)
+        for evento in lt.iterator(lista):
+            id1 = puntos_de_seguimiento(evento["location-long"], evento["location-lat"])
+            id1= id1+"_"+identificador_compuesto(evento["individual-local-identifier"], evento["tag-local-identifier"])
+            if not(gr.containsVertex(grafoD, id1)):
+                gr.insertVertex(grafoD, id1)
+    return gr.numVertices(data_structs["tracksD"])
 
 
 
@@ -138,6 +137,7 @@ def anadir_arcos(data_structs):
                 id2 = id2+"_"+id_compuesto2
             if id1 != id2:
                 gr.addEdge(grafoD, id1, id2, weight=0)
+    return  lt.size(gr.edges(data_structs["tracksD"]))
             
         
         

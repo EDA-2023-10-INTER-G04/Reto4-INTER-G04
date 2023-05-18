@@ -100,10 +100,10 @@ def load_data(control, file):
             lt.addLast(temp_lista, info)
             mp.put(control["mapa_arcos"], individuo, temp_lista)
             
-    model.anadir_nodos(control)
-    model.anadir_arcos(control)
+    vertices = model.anadir_nodos(control)
+    #edges = model.anadir_arcos(control)
     
-    return control
+    return vertices, 1
         
         
     
