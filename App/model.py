@@ -70,6 +70,7 @@ def new_data_structs():
     control["tracksD"] = gr.newGraph(datastructure="ADJ_LIST", directed=True)
     control["tracksND"] = gr.newGraph(datastructure="ADJ_LIST", directed=False)
     control["mapa_eventos"] = mp.newMap(numelements=100, maptype="CHAINING", loadfactor=4)
+    control["mapa_arcos"] = mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
     
     # TracksND = Grafo No Dirigido
     
@@ -108,7 +109,30 @@ def anadir_nodos(data_structs):
             lobo = lt.getElement(lista, 1)
             nueva_llave = str(llave)+"_"+str(lobo)
             gr.insertVertex(grafoD, nueva_llave)
+
+
+
+def anadir_arcos(data_structs):
+    """
+
+    """
+    grafoD = data_structs["tracksD"]
+    mapa_hash = data_structs["mapa_arcos"]
+    llaves = mp.keys(mapa_hash)
+
+    for llave in lt.iterator(llaves):
+        pareja = mp.get(mapa_hash, llave)
+        lobos = me.getValue(pareja)
+        
+        quk.quicksort(lobos, sort_crit=cmp_fecha2)
+        
+    i = 0
     
+    while i < lt.size(lobos)
+        
+        
+    
+
     
     
 def puntos_de_seguimiento(longitud, latitud):
