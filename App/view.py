@@ -73,6 +73,7 @@ def load_data(control):
     print(x[0])
     print(x[1])
     print(x[2])
+    print(x[3])
 
 
 def print_data(control, id):

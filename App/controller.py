@@ -105,9 +105,11 @@ def load_data(control, file):
     x = model.anadir_nodos(control)
     vertices = x[0]
     MTPs = x[1]
-    edges = model.anadir_arcos(control)
+    y = model.anadir_arcos(control)
+    edges = y[0]
+    gathering = y[1]
     
-    return vertices, MTPs, edges
+    return vertices, MTPs, edges, gathering
         
         
     

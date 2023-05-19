@@ -127,7 +127,11 @@ def anadir_arcos(data_structs):
     grafoD = data_structs["tracksD"]
     mapa_hash = data_structs["mapa_arcos"]
     llaves = mp.keySet(mapa_hash)
-
+    gathering_edges = 0
+    def1 = 0
+    def2 = 0
+    def3 = 0
+    def4 = 0
     for llave in lt.iterator(llaves):
         pareja = mp.get(mapa_hash, llave)
         tracks = me.getValue(pareja)
@@ -143,22 +147,36 @@ def anadir_arcos(data_structs):
             id_compuesto2 = id2+"_"+identificador_compuesto(event2["individual-local-identifier"], event2["tag-local-identifier"])
             mtp1 = False
             mtp2 = False
+            
             if gr.containsVertex(grafoD, id1):
                 mtp1 = True
             if gr.containsVertex(grafoD, id2):
                 mtp2 = True
-            if mtp1 == True and mtp2 == False:
-                gr.addEdge(grafoD, id1, id_compuesto2)
-            elif mtp1 == True and mtp2 == True:
-                gr.addEdge(grafoD, id1, id2)
-                gr.addEdge(grafoD, id_compuesto2, id2)
-            elif mtp1 == False and mtp2 == True:
-                gr.addEdge(grafoD, id_compuesto1, id_compuesto2)
-                gr.addEdge(grafoD, id_compuesto2, id2)
-            elif mtp1 == False and mtp2 == False:
-                gr.addEdge(grafoD, id_compuesto1, id_compuesto2)
-            
-    return  gr.numEdges(grafoD)
+            if id1 != id2:
+                if mtp1 == True and mtp2 == False:
+                    gr.addEdge(grafoD, id1, id_compuesto2)
+                elif mtp1 == True and mtp2 == True:
+                    gr.addEdge(grafoD, id1, id2)
+                    gr.addEdge(grafoD, id1, id_compuesto2)
+                    gr.addEdge(grafoD, id_compuesto2, id2)
+                    gathering_edges += 2
+                    def2 += 1
+                elif mtp1 == False and mtp2 == True:
+                    gr.addEdge(grafoD, id_compuesto1, id_compuesto2)
+                    gr.addEdge(grafoD, id_compuesto2, id2)
+                    gathering_edges += 1
+                    def3 += 1
+                elif mtp1 == False and mtp2 == False:
+                    gr.addEdge(grafoD, id_compuesto1, id_compuesto2)
+                    def4 += 1
+            ultimo_evento = lt.getElement(tracks, lt.size(tracks))
+            idultimo = puntos_de_seguimiento(ultimo_evento["location-long"], ultimo_evento["location-lat"])
+            id_compuesto = idultimo+"_"+identificador_compuesto(ultimo_evento["individual-local-identifier"], ultimo_evento["tag-local-identifier"])
+            if gr.containsVertex(grafoD, idultimo):
+                gr.addEdge(grafoD, id_compuesto, idultimo)
+                gathering_edges += 1
+    edges = gr.numEdges(grafoD)    
+    return  edges, gathering_edges
             
         
         
