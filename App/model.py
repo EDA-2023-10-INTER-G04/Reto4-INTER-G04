@@ -140,7 +140,7 @@ def anadir_arcos(data_structs):
             id1 = puntos_de_seguimiento(event1["location-long"], event1["location-lat"])
             id_compuesto1 = id1+"_"+identificador_compuesto(event1["individual-local-identifier"], event1["tag-local-identifier"])
             id2 = puntos_de_seguimiento(event2["location-long"], event2["location-lat"])
-            id_compuesto2 = id1+"_"+identificador_compuesto(event2["individual-local-identifier"], event2["tag-local-identifier"])
+            id_compuesto2 = id2+"_"+identificador_compuesto(event2["individual-local-identifier"], event2["tag-local-identifier"])
             mtp1 = False
             mtp2 = False
             if gr.containsVertex(grafoD, id1):
@@ -150,7 +150,7 @@ def anadir_arcos(data_structs):
             if mtp1 == True and mtp2 == False:
                 gr.addEdge(grafoD, id1, id_compuesto2)
             elif mtp1 == True and mtp2 == True:
-                gr.addEdge(grafoD, id1, id_compuesto2)
+                gr.addEdge(grafoD, id1, id2)
                 gr.addEdge(grafoD, id_compuesto2, id2)
             elif mtp1 == False and mtp2 == True:
                 gr.addEdge(grafoD, id_compuesto1, id_compuesto2)
