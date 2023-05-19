@@ -215,11 +215,19 @@ def data_size(data_structs):
     pass
 
 
-def req_1(data_structs):
+def req_1(data_structs, mtp_origen, mtp_destino):
     """
-    Función que soluciona el requerimiento 1
+    mtp_origen: Identificador del punto de encuentro de origen.
+                (corresponde al identificador único compuesto creado por la longitud-latitud de punto GPS)
+    
+    mtp_destino: Identificador del punto de encuentro de destino.
+                 (corresponde al identificador único compuesto creado por la latitud-longitud del punto GPS)
     """
-    # TODO: Realizar el requerimiento 1
+    
+    grafo = data_structs["tracksD"]
+    if dfs.hasPathTo(search=, vertex=):
+        camino = dfs.pathTo(search=, vertex=)
+        
     pass
 
 
