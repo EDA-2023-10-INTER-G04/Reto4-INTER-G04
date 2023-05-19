@@ -66,10 +66,10 @@ def load_data(control):
     """
     Carga los datos
     """
-    nom_individuos = "BA-Grey-Wolf-individuals-utf8-large.csv"
+    
     print ("1- small \n2-5pct \n3-10 pct \n4-20pct \n5-30pct \n6-50pct \n7-80pct \n8-large")
     resp = int(input("Seleccione el tamaño del archivo: "))
-    return controller.load_data(control, resp, nom_individuos)
+    return controller.load_data(control, resp)
 
 
 def print_data(control, id):
