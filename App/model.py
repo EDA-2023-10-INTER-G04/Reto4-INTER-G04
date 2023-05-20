@@ -70,8 +70,9 @@ def new_data_structs():
     
     control["tracksD"] = gr.newGraph(datastructure="ADJ_LIST", directed=True)
     control["tracksND"] = gr.newGraph(datastructure="ADJ_LIST", directed=False)
-    control["mapa_eventos"] = mp.newMap(numelements=100, maptype="CHAINING", loadfactor=4)
+    control["mapa_eventos"] = mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
     control["mapa_arcos"] = mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
+    control["mapa_individuos" ]= mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
     
     # TracksND = Grafo No Dirigido
     
@@ -81,13 +82,35 @@ def new_data_structs():
 
 # Funciones para agregar informacion al modelo
 
+def add_individual(control, info):
+    individuo = identificador_compuesto(info["animal-id"], info["tag-id"])
+    mp.put(control["mapa_individuos"], individuo, info)
 
-def add_data(data_structs, data):
+def add_data(control, info):
     """
     Función para agregar nuevos elementos a la lista
     """
-    #TODO: Crear la función para agregar elementos a una lista
-    pass
+    posicion = puntos_de_seguimiento(info["location-long"], info["location-lat"])
+    individuo = identificador_compuesto(info["individual-local-identifier"], info["tag-local-identifier"])
+    if mp.contains(control["mapa_eventos"], posicion):
+            
+        pareja = mp.get(control["mapa_eventos"], posicion)
+        lista = me.getValue(pareja)
+        if lt.isPresent(lista, individuo) == 0:
+            lt.addLast(lista, individuo)    
+    else:
+        temp_lista = lt.newList(datastructure="ARRAY_LIST")
+        lt.addLast(temp_lista, individuo)
+        mp.put(control["mapa_eventos"], posicion, temp_lista)
+        
+    if mp.contains(control["mapa_arcos"], individuo):
+        pareja_arcos = mp.get(control["mapa_arcos"], individuo)
+        lista_eventos = me.getValue(pareja_arcos)
+        lt.addLast(lista_eventos, info)
+    else:
+        temp_lista = lt.newList(datastructure="ARRAY_LIST")
+        lt.addLast(temp_lista, info)
+        mp.put(control["mapa_arcos"], individuo, temp_lista)
 
 
 # Funciones para creacion de datos

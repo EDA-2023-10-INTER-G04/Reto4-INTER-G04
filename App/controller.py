@@ -80,27 +80,10 @@ def load_data(control, file):
     tracks_data = csv.DictReader(open(datafile_tracks, encoding="utf-8"))
     
     for info in tracks_data:
-        posicion = model.puntos_de_seguimiento(info["location-long"], info["location-lat"])
-        individuo = model.identificador_compuesto(info["individual-local-identifier"], info["tag-local-identifier"])
-        if mp.contains(control["mapa_eventos"], posicion):
-            
-            pareja = mp.get(control["mapa_eventos"], posicion)
-            lista = me.getValue(pareja)
-            if lt.isPresent(lista, individuo) == 0:
-                lt.addLast(lista, individuo)    
-        else:
-            temp_lista = lt.newList(datastructure="ARRAY_LIST")
-            lt.addLast(temp_lista, individuo)
-            mp.put(control["mapa_eventos"], posicion, temp_lista)
-        
-        if mp.contains(control["mapa_arcos"], individuo):
-            pareja_arcos = mp.get(control["mapa_arcos"], individuo)
-            lista_eventos = me.getValue(pareja_arcos)
-            lt.addLast(lista_eventos, info)
-        else:
-            temp_lista = lt.newList(datastructure="ARRAY_LIST")
-            lt.addLast(temp_lista, info)
-            mp.put(control["mapa_arcos"], individuo, temp_lista)
+        model.add_data(control, info)
+    
+    for info in individuals_data:
+        model.add_individual
     
     x = model.anadir_nodos(control)
     vertices = x[0]
