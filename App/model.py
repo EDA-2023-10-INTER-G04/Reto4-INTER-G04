@@ -224,12 +224,13 @@ def req_1(data_structs, mtp_origen, mtp_destino):
                  (corresponde al identificador único compuesto creado por la latitud-longitud del punto GPS)
     """
     
-    grafo = data_structs["tracksD"]
-    if dfs.hasPathTo(search=, vertex=):
-        camino = dfs.pathTo(search=, vertex=)
-        
-    pass
-
+    #camino = dfs.DepthFirstSearch(data_structs["tracksD"], mtp_destino)
+    #return camino
+    
+    estructura = dfs.DepthFirstSearch(data_structs["tracksD"], mtp_origen)
+    return dfs.pathTo(estructura, mtp_destino)
+    
+    #return dfs.hasPathTo(data_structs["tracksD"], mtp_destino)
 
 def req_2(data_structs):
     """

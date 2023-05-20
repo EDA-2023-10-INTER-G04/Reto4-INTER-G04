@@ -74,6 +74,7 @@ def load_data(control):
     print(x[1])
     print(x[2])
     print(x[3])
+    print(x[4])
 
 
 def print_data(control, id):
@@ -87,8 +88,15 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 1
-    pass
+    
+    #m111p471_56p696
+    #m111p165_56p701
+    
+    mtp_inicio = input("Inicio: ")
+    mtp_destino = input("Destino: ")
+    
+    camino = controller.req_1(control, mtp_inicio, mtp_destino)
+    print(camino)
 
 
 def print_req_2(control):

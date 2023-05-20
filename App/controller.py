@@ -108,8 +108,9 @@ def load_data(control, file):
     y = model.anadir_arcos(control)
     edges = y[0]
     gathering = y[1]
+    grafo = control["tracksD"]
     
-    return vertices, MTPs, edges, gathering
+    return vertices, MTPs, edges, gathering, grafo
         
         
     
@@ -135,12 +136,11 @@ def get_data(control, id):
     pass
 
 
-def req_1(control):
+def req_1(control, mtp_inicio, mtp_destino):
     """
     Retorna el resultado del requerimiento 1
     """
-    # TODO: Modificar el requerimiento 1
-    pass
+    return model.req_1(control, mtp_inicio, mtp_destino)
 
 
 def req_2(control):
