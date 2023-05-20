@@ -47,6 +47,7 @@ from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 import datetime
+import math
 assert cf
 
 """
@@ -145,6 +146,11 @@ def anadir_arcos(data_structs):
             id_compuesto1 = id1+"_"+identificador_compuesto(event1["individual-local-identifier"], event1["tag-local-identifier"])
             id2 = puntos_de_seguimiento(event2["location-long"], event2["location-lat"])
             id_compuesto2 = id2+"_"+identificador_compuesto(event2["individual-local-identifier"], event2["tag-local-identifier"])
+            y1 = float(((id1.split("_"))[1]).replace("p",".").replace("m", "-"))
+            x1 = float(((id1.split("_"))[0]).replace("p",".").replace("m", "-"))
+            y2 = float(((id2.split("_"))[1]).replace("p",".").replace("m", "-"))
+            x2 = float(((id2.split("_"))[0]).replace("p",".").replace("m", "-"))
+            distancia = (2*math.asin(math.sqrt((math.sin(math.radians((y1-y2))/2))**2)+(math.cos(math.radians(y1))*math.cos(math.radians(float(y2)))*(math.sin(math.radians((x1-float(x2))/2))**2))))*(6371)
             mtp1 = False
             mtp2 = False
             
@@ -156,8 +162,8 @@ def anadir_arcos(data_structs):
                 if mtp1 == True and mtp2 == False:
                     gr.addEdge(grafoD, id1, id_compuesto2)
                 elif mtp1 == True and mtp2 == True:
-                    gr.addEdge(grafoD, id1, id2)
-                    gr.addEdge(grafoD, id1, id_compuesto2)
+                    gr.addEdge(grafoD, id1, id2, distancia)
+                    gr.addEdge(grafoD, id1, id_compuesto2, distancia)
                     gr.addEdge(grafoD, id_compuesto2, id2)
                     gathering_edges += 2
                     def2 += 1
