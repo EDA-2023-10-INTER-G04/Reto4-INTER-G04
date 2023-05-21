@@ -161,7 +161,12 @@ def anadir_arcos(data_structs):
         tracks = me.getValue(pareja)
         
         quk.sort(tracks, cmp_fecha2)
-        
+        primer_evento = lt.getElement(tracks, 1)
+        idprimer = puntos_de_seguimiento(primer_evento["location-long"], primer_evento["location-lat"])
+        id_compuesto = idprimer+"_"+identificador_compuesto(primer_evento["individual-local-identifier"], primer_evento["tag-local-identifier"])
+        if gr.containsVertex(grafoD, idprimer):
+            gr.addEdge(grafoD, id_compuesto, idprimer)
+            gathering_edges += 1
         for i in range(1, lt.size(tracks)):
             event1 = lt.getElement(tracks, i)
             event2 = lt.getElement(tracks, i+1)
@@ -271,8 +276,10 @@ def req_3(data_structs):
     """
     Función que soluciona el requerimiento 3
     """
-    # TODO: Realizar el requerimiento 3
-    pass
+    Kosaraju = scc.KosarajuSCC(data_structs["tracksD"])
+    sccs = scc.sccCount(data_structs["tracksD"], Kosaraju, lt.getElement(gr.vertices(data_structs["tracksD"]), 1))
+    manadas = scc.connectedComponents(Kosaraju)
+    return manadas
 
 
 def req_4(data_structs):
