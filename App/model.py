@@ -288,12 +288,98 @@ def req_1(data_structs, mtp_origen, mtp_destino):
     return temp, round(distancia_total, 3), total_nodos, total_arcos, total_mtps, total_trackid
     
 
-def req_2(data_structs):
+def req_2(data_structs, id_origen, id_destino):
     """
     Función que soluciona el requerimiento 2
     """
-    # TODO: Realizar el requerimiento 2
-    pass
+    if gr.containsVertex(data_structs["tracksD"], id_origen):
+        search = bfs.BreadhtFisrtSearch(data_structs["tracksD"], id_origen)
+    camino = None
+    path = None
+    dist_total = 0
+    MTPs = 0
+    puntos_seguimiento = 0
+    arcos_camino = lt.newList("ARRAY_LIST")
+    info = lt.newList("ARRAY_LIST")
+    final = lt.newList("ARRAY_LIST")
+    if bfs.hasPathTo(search, id_destino):
+        camino = bfs.pathTo(search, id_destino)
+        path = lt.newList("ARRAY_LIST")
+        while not st.isEmpty(camino):
+            current = st.pop(camino)
+            lt.addLast(path, current)
+        for i in range(1, lt.size(path)):
+           vert1 = lt.getElement(path, i)
+           vert2 = lt.getElement(path, i+1)
+           arco = gr.getEdge(data_structs["tracksD"], vert1, vert2)
+           lt.addLast(arcos_camino, arco["weight"])
+           dist_total += float(arco["weight"])
+        for i in range(1, lt.size(path)+1):
+            cant_lobos = 1
+            vertex = lt.getElement(path, i)
+            distTo = "unknown"
+            lat = float(((vertex.split("_"))[1]).replace("p",".").replace("m", "-"))
+            long = float(((vertex.split("_"))[0]).replace("p",".").replace("m", "-"))
+            if len(vertex.split("_")) <= 2:
+                MTPs += 1
+                lobos = (me.getValue(mp.get(data_structs["mapa_eventos"], vertex)))["elements"]
+                cant_lobos = len(lobos)
+            else:
+                puntos_seguimiento += 1
+                distTo = lt.getElement(arcos_camino, i)
+                lobos = (vertex.split("_",2))[2]
+            if i < lt.size(path):
+                    distTo = lt.getElement(arcos_camino, i)
+                    edgeTo = lt.getElement(path, i+1)
+            if cant_lobos > 6:
+                temp = lt.newList("ARRAY_LIST")
+                x = lt.getElement(lobos, 1)
+                lt.addLast(temp, x)
+                x = lt.getElement(lobos, 2)
+                lt.addLast(temp, x)
+                x = lt.getElement(lobos, 3)
+                lt.addLast(temp, x)
+                x = lt.getElement(lobos, lt.size(lobos)-0)
+                lt.addLast(temp, x)
+                x = lt.getElement(lobos, lt.size(lobos)-1)
+                lt.addLast(temp, x)
+                x = lt.getElement(lobos, lt.size(lobos)-2)
+                lt.addLast(temp, x)
+                lobos = temp["elements"]
+            y = {
+                "identificador": vertex,
+                "edgeTo": edgeTo,
+                "distTo": distTo,
+                "lobos que pasan por punto": cant_lobos,
+                "lista lobos": lobos,
+                "longitud": long,
+                "latitud": lat
+            }
+            lt.addLast(info, y)
+    if lt.size(info) > 10:
+        x = lt.getElement(info, 1)
+        lt.addLast(final, x)
+        x = lt.getElement(info, 2)
+        lt.addLast(final, x)
+        x = lt.getElement(info, 3)
+        lt.addLast(final, x)
+        x = lt.getElement(info, 4)
+        lt.addLast(final, x)
+        x = lt.getElement(info, 5)
+        lt.addLast(final, x)
+        x = lt.getElement(info, lt.size(info)-4)
+        lt.addLast(final, x)
+        x = lt.getElement(info, lt.size(info)-3)
+        lt.addLast(final, x)
+        x = lt.getElement(info, lt.size(info)-2)
+        lt.addLast(final, x)
+        x = lt.getElement(info, lt.size(info)-1)
+        lt.addLast(final, x)
+        x = lt.getElement(info, lt.size(info))
+        lt.addLast(final, x)
+    else:
+        final = info
+    return final["elements"], MTPs, puntos_seguimiento, dist_total
 
 
 def req_3(data_structs):

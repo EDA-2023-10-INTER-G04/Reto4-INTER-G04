@@ -142,8 +142,13 @@ def print_req_2(control):
     """
         Función que imprime la solución del Requerimiento 2 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    mtp_inicio = input("Inicio: ")
+    mtp_destino = input("Destino: ")
+    x = controller.req_2(control, mtp_inicio, mtp_destino)
+    print(tabulate(x[0], headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
+    print(x[1])
+    print(x[2])
+    print(x[3])
 
 
 def print_req_3(control):

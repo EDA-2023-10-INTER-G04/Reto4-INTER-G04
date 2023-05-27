@@ -127,12 +127,11 @@ def req_1(control, mtp_inicio, mtp_destino):
     return req1[0], req1[1], req1[2], req1[3], req1[4], req1[5]
 
 
-def req_2(control):
+def req_2(control, id_origen, id_destino):
     """
     Retorna el resultado del requerimiento 2
     """
-    # TODO: Modificar el requerimiento 2
-    pass
+    return model.req_2(control, id_origen, id_destino)
 
 
 def req_3(control):
