@@ -23,6 +23,7 @@
 import config as cf
 import sys
 import controller
+import pandas as pd
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
@@ -84,6 +85,14 @@ def print_data(control, id):
     #TODO: Realizar la función para imprimir un elemento
     pass
 
+
+def puntos_de_seguimiento_inver(compuesto):
+    
+    lista = compuesto.replace("p", ".").replace("m", "-").split("_")
+    long = lista[0]
+    lat = lista[1]
+    return long, lat
+
 def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
@@ -96,8 +105,38 @@ def print_req_1(control):
     mtp_destino = input("Destino: ")
     
     camino = controller.req_1(control, mtp_inicio, mtp_destino)
-    print(camino)
+    
+    print()
+    print("============ Información Req 1 ============")
+    print("Total nodos del camino recorrido: " + str(camino[2]))
+    print("Puntos de encuentro en total: " + str(camino[4]))
+    print("Total movimientos individuales: " + str(camino[5]))
+    print("Distancia del camino: " + str(camino[1]) + "Km")
+    print("Nodos del DFS: " + str(camino[2]))
+    print("Arcos del DFS: " + str(camino[3]))
+    
+    info = camino[0]["elements"]
+    for paso in info:
+        
+        long_lat = puntos_de_seguimiento_inver(paso["vertexA"])
+        long = long_lat[0]
+        lat = long_lat[1]
+        
+        paso["location-long-aprox"] = long
+        paso["location-lat-aprox"] = lat
+        
+        paso["node-id"] = paso["vertexA"]
+        del paso["vertexA"]
+        paso["edge-to"] = paso["vertexB"]
+        del paso["vertexB"]
+        paso["edge-distance-km"] = paso["weight"]
+        del paso["weight"]
 
+    print(tabulate(info, headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
+    
+    #print(info)
+    
+    
 
 def print_req_2(control):
     """

@@ -123,7 +123,8 @@ def req_1(control, mtp_inicio, mtp_destino):
     """
     Retorna el resultado del requerimiento 1
     """
-    return model.req_1(control, mtp_inicio, mtp_destino)
+    req1 = model.req_1(control, mtp_inicio, mtp_destino)
+    return req1[0], req1[1], req1[2], req1[3], req1[4], req1[5]
 
 
 def req_2(control):

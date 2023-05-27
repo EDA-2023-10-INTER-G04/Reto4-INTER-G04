@@ -183,7 +183,7 @@ def anadir_arcos(data_structs):
                 mtp2 = True
             if id1 != id2:
                 if mtp1 == True and mtp2 == False:
-                    gr.addEdge(grafoD, id1, id_compuesto2)
+                    gr.addEdge(grafoD, id1, id_compuesto2, distancia)
                 elif mtp1 == True and mtp2 == True:
                     gr.addEdge(grafoD, id1, id2, distancia)
                     gr.addEdge(grafoD, id1, id_compuesto2, distancia)
@@ -191,12 +191,12 @@ def anadir_arcos(data_structs):
                     gathering_edges += 2
                     def2 += 1
                 elif mtp1 == False and mtp2 == True:
-                    gr.addEdge(grafoD, id_compuesto1, id_compuesto2)
+                    gr.addEdge(grafoD, id_compuesto1, id_compuesto2 ,distancia)
                     gr.addEdge(grafoD, id_compuesto2, id2)
                     gathering_edges += 1
                     def3 += 1
                 elif mtp1 == False and mtp2 == False:
-                    gr.addEdge(grafoD, id_compuesto1, id_compuesto2)
+                    gr.addEdge(grafoD, id_compuesto1, id_compuesto2, distancia)
                     def4 += 1
             ultimo_evento = lt.getElement(tracks, lt.size(tracks))
             idultimo = puntos_de_seguimiento(ultimo_evento["location-long"], ultimo_evento["location-lat"])
@@ -255,8 +255,37 @@ def req_1(data_structs, mtp_origen, mtp_destino):
 
     estructura = dfs.DepthFirstSearch(data_structs["tracksD"], mtp_origen)
     camino = dfs.pathTo(estructura, mtp_destino)
+
+    total_mtps = 0
+    total_trackid = 0
+    for vertice in lt.iterator(camino):
+        if len(vertice) == 15:
+            total_mtps += 1
+        else:
+            total_trackid += 1
+        
+    copia_camino = camino.copy()
     
-    return camino
+    lista_vertices = lt.newList(datastructure="ARRAY_LIST")
+    while not (st.isEmpty(copia_camino)):
+        vertice = st.pop(copia_camino)
+        lt.addLast(lista_vertices, vertice)
+        
+    distancia_total = 0
+    lista_pesos = lt.newList(datastructure="ARRAY_LIST")
+    temp = lt.newList(datastructure="ARRAY_LIST")
+    for i in range(1, lt.size(lista_vertices)):
+           vert1 = lt.getElement(lista_vertices, i)
+           vert2 = lt.getElement(lista_vertices, i+1)
+           arco = gr.getEdge(data_structs["tracksD"], vert1, vert2)
+           lt.addLast(lista_pesos, arco["weight"])
+           lt.addLast(temp, arco)
+           distancia_total += float(arco["weight"])
+    
+    total_nodos = lt.size(camino)
+    total_arcos = lt.size(lista_pesos)
+    
+    return temp, round(distancia_total, 3), total_nodos, total_arcos, total_mtps, total_trackid
     
 
 def req_2(data_structs):
