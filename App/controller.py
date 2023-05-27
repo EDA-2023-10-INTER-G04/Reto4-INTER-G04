@@ -92,8 +92,10 @@ def load_data(control, file):
     edges = y[0]
     gathering = y[1]
     grafo = control["tracksD"]
+    mapa = control["mapa_eventos"]
+    conteo = x[2]
     
-    return vertices, MTPs, edges, gathering, grafo
+    return vertices, MTPs, edges, gathering, grafo, mapa, conteo
         
         
     
