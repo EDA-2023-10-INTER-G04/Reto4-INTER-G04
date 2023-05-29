@@ -73,6 +73,8 @@ def new_data_structs():
     control["mapa_eventos"] = mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
     control["mapa_arcos"] = mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
     control["mapa_individuos" ]= mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
+    control["grafo_5" ] = gr.newGraph(datastructure="ADJ_LIST", directed=False)
+    control["grafo_5D" ] = gr.newGraph(datastructure="ADJ_LIST", directed=True)
     
     # TracksND = Grafo No Dirigido
     
@@ -323,12 +325,36 @@ def req_4(data_structs):
     pass
 
 
-def req_5(data_structs):
+def req_5(data_structs, inicio, distancia, puntos):
     """
     Función que soluciona el requerimiento 5
     """
-    # TODO: Realizar el requerimiento 5
-    pass
+    graph = data_structs["tracksD"]
+    graph_prueba = data_structs["grafo_5D"]
+    real_graph = data_structs["grafo_5"]
+    grafo = prim.PrimMST(graph, inicio)
+    lista = mp.valueSet(grafo["edgeTo"])
+    for vertice in lt.iterator(lista):
+        if not(gr.containsVertex(graph_prueba, vertice["vertexA"])):
+                gr.insertVertex(graph_prueba, vertice["vertexA"])
+        if not(gr.containsVertex(graph_prueba, vertice["vertexB"])):
+                gr.insertVertex(graph_prueba, vertice["vertexB"])
+        
+        if gr.getEdge(graph_prueba, vertice["vertexA"], vertice["vertexB"]) == None:
+            gr.addEdge(graph_prueba, vertice["vertexA"], vertice["vertexB"], vertice["weight"])
+    dfs.DepthFirstSearch(graph_prueba, inicio)
+    #hacer dfs, iterar cada posible vertice al que puede llegar, pedir la ruta y revisar en el valueset la suma de los arcos para llegar (while con ambos menor a distancia y que no haya llegado al vertice destino). Si cumple el limite de distancia guardar en una pq o algo y encontrar el mayor. Luego magia para sacar el numero del vertice cuyo peso se le atribuye a tal distancia.
+        
+    '''for vertice in lt.iterator(lista):
+        if not(gr.containsVertex(real_graph, vertice["vertexA"])):
+                gr.insertVertex(real_graph, vertice["vertexA"])
+        if not(gr.containsVertex(real_graph, vertice["vertexB"])):
+                gr.insertVertex(real_graph, vertice["vertexB"])
+        if gr.getEdge(graph_prueba, vertice["vertexA"], vertice["vertexB"]) != None and gr.getEdge(graph_prueba, vertice["vertexB"], vertice["vertexA"]) != None:
+            gr.addEdge(real_graph, vertice["vertexA"], vertice["vertexB"], vertice["weight"])'''
+    #print (gr.numEdges(real_graph))
+    
+    return 
 
 
 def req_6(data_structs):

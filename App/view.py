@@ -161,13 +161,17 @@ def print_req_4(control):
     # TODO: Imprimir el resultado del requerimiento 4
     pass
 
-
+#m112p039_56p612
 def print_req_5(control):
     """
         Función que imprime la solución del Requerimiento 5 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 5
-    pass
+    mtp_inicio = input("Inicio: ")
+    dist = int(input("distancia máxima que se puede recorrer:"))
+    minimo = int(input("Mínimo de puntos de encuentro:"))
+    tabla = controller.req_5(control, mtp_inicio, dist, minimo)
+    #print (tabla)
+    
 
 
 def print_req_6(control):
