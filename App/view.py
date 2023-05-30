@@ -68,13 +68,14 @@ def load_data(control):
     """
     print ("1- small \n2-5pct \n3-10 pct \n4-20pct \n5-30pct \n6-50pct \n7-80pct \n8-large")
     resp = int(input("Seleccione el tamaño del archivo: "))
-
-    x = controller.load_data(control, resp)
+    a = input("Desea observar el uso de memoria?: ")
+    memflag = castBoolean(a)
+    x = controller.load_data(control, resp, memflag)
     print(x[0])
     print(x[1])
     print(x[2])
     print(x[3])
-    #print(x[4])
+    print(x[5])
 
 
 def print_data(control, id):
@@ -111,8 +112,14 @@ def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
-    x = controller.req_3(control)
-    print(x)
+    a = input("Desea observar el uso de memoria?: ")
+    memflag = castBoolean(a)
+    z = controller.req_3(control, memflag)
+    x = z[0]
+    info = x[0]
+    print(tabulate(info["elements"], headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
+    print(f"Hay un total de {x[1]} componentes conectados")
+    print(z[1])
 
 
 def print_req_4(control):
@@ -143,9 +150,23 @@ def print_req_7(control):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    a = input("Desea observar el uso de memoria?: ")
+    memflag = castBoolean(a)
+    z = controller.req_7(control,memflag)
+    x = z[0]
+    info = x[0]
+    print(tabulate(info["elements"], headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
+    print(f"Hay un total de {x[1]} componentes conectados")
+    print(z[1])
 
+def castBoolean(value):
+    """
+    Convierte un valor a booleano
+    """
+    if value in ('True', 'true', 'TRUE', 'T', 't', '1', 1, True):
+        return True
+    else:
+        return False
 
 def print_req_8(control):
     """

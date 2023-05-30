@@ -44,10 +44,17 @@ def new_controller():
 
 # Funciones para la carga de datos
 
-def load_data(control, file):
+def load_data(control, file, memflag=False):
     """
     Carga los datos del reto
     """
+    start_time = get_time()
+    
+    # Inicializa el proceso para medir memoria
+    if memflag is True:
+        tracemalloc.start()
+        start_memory = get_memory()
+    
     if file == 1:
         tracks = "BA-Grey-Wolf-tracks-utf8-small.csv"
         individuals = "BA-Grey-Wolf-individuals-utf8-small.csv"
@@ -83,7 +90,7 @@ def load_data(control, file):
         model.add_data(control, info)
     
     for info in individuals_data:
-        model.add_individual
+        model.add_individual(control, info)
     
     x = model.anadir_nodos(control)
     vertices = x[0]
@@ -92,8 +99,22 @@ def load_data(control, file):
     edges = y[0]
     gathering = y[1]
     grafo = control["tracksD"]
+    model.cantidad_mpts(control)
+    # Toma el tiempo al final del proceso
+    stop_time = get_time()
+    # Calculando la diferencia en tiempo
+    delta_t = delta_time(start_time, stop_time)
     
-    return vertices, MTPs, edges, gathering, grafo
+    # Finaliza el proceso para medir memoria
+    mensaje = f"Tiempo: {delta_t}ms"
+    if memflag is True:
+        stop_memory = get_memory()
+        tracemalloc.stop()
+        # Calcula la diferencia de memoria
+        delta_m = delta_memory(stop_memory, start_memory)
+        # Respuesta con los datos de tiempo y memoria
+        mensaje = f"Tiempo: {delta_t}ms, Memoria: {delta_m}kB"
+    return vertices, MTPs, edges, gathering, grafo, mensaje
         
         
     
@@ -134,11 +155,33 @@ def req_2(control):
     pass
 
 
-def req_3(control):
+def req_3(control, memflag= False):
     """
     Retorna el resultado del requerimiento 3
     """
-    return model.req_3(control)
+    start_time = get_time()
+    
+    # Inicializa el proceso para medir memoria
+    if memflag is True:
+        tracemalloc.start()
+        start_memory = get_memory()
+        
+    x = model.req_3(control)
+     # Toma el tiempo al final del proceso
+    stop_time = get_time()
+    # Calculando la diferencia en tiempo
+    delta_t = delta_time(start_time, stop_time)
+    
+    # Finaliza el proceso para medir memoria
+    mensaje = f"Tiempo: {delta_t}ms"
+    if memflag is True:
+        stop_memory = get_memory()
+        tracemalloc.stop()
+        # Calcula la diferencia de memoria
+        delta_m = delta_memory(stop_memory, start_memory)
+        # Respuesta con los datos de tiempo y memoria
+        mensaje = f"Tiempo: {delta_t}ms, Memoria: {delta_m}kB"
+    return x, mensaje
 
 
 def req_4(control):
@@ -164,12 +207,32 @@ def req_6(control):
     pass
 
 
-def req_7(control):
+def req_7(control, memflag= False):
     """
     Retorna el resultado del requerimiento 7
     """
-    # TODO: Modificar el requerimiento 7
-    pass
+    start_time = get_time()
+    
+    # Inicializa el proceso para medir memoria
+    if memflag is True:
+        tracemalloc.start()
+        start_memory = get_memory()
+    x = model.req_7(control)
+    # Toma el tiempo al final del proceso
+    stop_time = get_time()
+    # Calculando la diferencia en tiempo
+    delta_t = delta_time(start_time, stop_time)
+    
+    # Finaliza el proceso para medir memoria
+    mensaje = f"Tiempo: {delta_t}ms"
+    if memflag is True:
+        stop_memory = get_memory()
+        tracemalloc.stop()
+        # Calcula la diferencia de memoria
+        delta_m = delta_memory(stop_memory, start_memory)
+        # Respuesta con los datos de tiempo y memoria
+        mensaje = f"Tiempo: {delta_t}ms, Memoria: {delta_m}kB"
+    return x, mensaje
 
 
 def req_8(control):
@@ -217,3 +280,40 @@ def delta_memory(stop_memory, start_memory):
     # de Byte -> kByte
     delta_memory = delta_memory/1024.0
     return delta_memory
+
+def ld(data_structs, archivo, memflag=True):
+    """
+    Carga los datos de los archivos CSV en el modelo
+    """
+    start_time = get_time()
+    
+    # Inicializa el proceso para medir memoria
+    if memflag is True:
+        tracemalloc.start()
+        start_memory = get_memory()
+    
+    # Ejecutando funcion a medir
+
+    archivo = cf.data_dir + archivo
+    input_file = csv.DictReader(open(archivo, encoding="utf-8"),
+                                delimiter=",")
+    for siniestro in input_file:
+        model.add_data(data_structs["general"], siniestro)
+        model.add_anio(data_structs["anio"], siniestro)
+        model.add_lista(data_structs["lista"], siniestro)
+    
+    x = model.primeros_ultimos_tres(data_structs["lista"])
+    
+    # Toma el tiempo al final del proceso
+    stop_time = get_time()
+    # Calculando la diferencia en tiempo
+    delta_t = delta_time(start_time, stop_time)
+    
+    # Finaliza el proceso para medir memoria
+    if memflag is True:
+        stop_memory = get_memory()
+        tracemalloc.stop()
+        # Calcula la diferencia de memoria
+        delta_m = delta_memory(stop_memory, start_memory)
+        # Respuesta con los datos de tiempo y memoria
+        return x["elements"], f"Tiempo: {delta_t}ms, Memoria: {delta_m}kB"
