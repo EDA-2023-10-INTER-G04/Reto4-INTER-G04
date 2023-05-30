@@ -229,7 +229,7 @@ def req_6(control):
     # TODO: Modificar el requerimiento 6
     pass
 
-def req_7(control, memflag= False):
+def req_7(control,templo, temphi, timelo, timehi, memflag= False):
     """
     Retorna el resultado del requerimiento 7
     """
@@ -239,7 +239,7 @@ def req_7(control, memflag= False):
     if memflag is True:
         tracemalloc.start()
         start_memory = get_memory()
-    x = model.req_7(control)
+    x = model.req_7(control, float(templo), float(temphi), timelo, timehi)
     # Toma el tiempo al final del proceso
     stop_time = get_time()
     # Calculando la diferencia en tiempo

@@ -202,9 +202,14 @@ def print_req_7(control):
     """
     a = input("Desea observar el uso de memoria?: ")
     memflag = castBoolean(a)
-    z = controller.req_7(control,memflag)
+    templo = input("\nIngrese el limite inferior de temperatura: ")
+    temphi = input("\nIngrese el limite superior de temperatura: ")
+    timelo = input("\nIngrese el limite inferior de fecha: ")
+    timehi = input("\nIngrese el limite inferior de fecha: ")
+    z = controller.req_7(control, templo, temphi, timelo, timehi,memflag)
     x = z[0]
     info = x[0]
+    
     print(tabulate(info["elements"], headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
     print(f"Hay un total de {x[1]} componentes conectados")
     print(z[1])
