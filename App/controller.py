@@ -121,7 +121,7 @@ def get_data(control, id):
     pass
 
 
-def req_1(control, mtp_inicio, mtp_destino):
+def req_1(control, mtp_inicio, mtp_destino,):
     """
     Retorna el resultado del requerimiento 1
     """
@@ -153,12 +153,24 @@ def req_4(control):
     pass
 
 
-def req_5(control, inicio, distancia, puntos):
+def req_5(control, inicio, distancia, puntos, mem):
     """
     Retorna el resultado del requerimiento 5
     """
     # TODO: Modificar el requerimiento 5
-    return model.req_5(control, inicio, distancia, puntos)
+    start_time = get_time()
+    if mem == 1:
+        tracemalloc.start()
+        mem_ini = get_memory()
+    resp = model.req_5(control, inicio, distancia, puntos)
+    if mem == 1:
+        mem_fin = get_memory()
+        tracemalloc.stop()
+        delta_m = delta_memory(mem_fin, mem_ini)
+        return resp, delta_m
+    end_time = get_time()
+    delta_t = delta_time(start_time, end_time)
+    return resp, delta_t
 
 def req_6(control):
     """
