@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+import sys
 import config as cf
 import sys
 import controller
@@ -29,6 +29,7 @@ from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
+
 assert cf
 from tabulate import tabulate
 import traceback
@@ -147,11 +148,15 @@ def print_req_2(control):
     """
     mtp_inicio = input("Inicio: ")
     mtp_destino = input("Destino: ")
-    x = controller.req_2(control, mtp_inicio, mtp_destino)
+    a = input("Desea observar el uso de memoria?: ")
+    memflag = castBoolean(a)
+    z = controller.req_2(control, mtp_inicio, mtp_destino, memflag)
+    x = z[0]
     print(tabulate(x[0], headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
     print(x[1])
     print(x[2])
     print(x[3])
+    print(z[1])
 
 
 def print_req_3(control):

@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+import sys
 import config as cf
 import model
 import time
@@ -149,11 +150,32 @@ def req_1(control, mtp_inicio, mtp_destino):
     return req1[0], req1[1], req1[2], req1[3], req1[4], req1[5]
 
 
-def req_2(control, id_origen, id_destino):
+def req_2(control, id_origen, id_destino, memflag= False):
     """
     Retorna el resultado del requerimiento 2
     """
-    return model.req_2(control, id_origen, id_destino)
+    start_time = get_time()
+    
+    # Inicializa el proceso para medir memoria
+    if memflag is True:
+        tracemalloc.start()
+        start_memory = get_memory()
+    x = model.req_2(control, id_origen, id_destino)
+     # Toma el tiempo al final del proceso
+    stop_time = get_time()
+    # Calculando la diferencia en tiempo
+    delta_t = delta_time(start_time, stop_time)
+    
+    # Finaliza el proceso para medir memoria
+    mensaje = f"Tiempo: {delta_t}ms"
+    if memflag is True:
+        stop_memory = get_memory()
+        tracemalloc.stop()
+        # Calcula la diferencia de memoria
+        delta_m = delta_memory(stop_memory, start_memory)
+        # Respuesta con los datos de tiempo y memoria
+        mensaje = f"Tiempo: {delta_t}ms, Memoria: {delta_m}kB"
+    return x, mensaje
 
 
 def req_3(control, memflag= False):
