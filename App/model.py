@@ -234,7 +234,48 @@ def anadir_arcos(data_structs):
             
         
         
-    
+def carga(control):
+    lobos = gr.vertices(control["tracksD"])
+    temp = lt.newList("ARRAY_LIST")
+    x = lt.getElement(lobos, 1)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, 2)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, 3)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, 4)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, 5)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, lt.size(lobos)-0)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, lt.size(lobos)-1)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, lt.size(lobos)-2)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, lt.size(lobos)-3)
+    lt.addLast(temp, x)
+    x = lt.getElement(lobos, lt.size(lobos)-4)
+    lt.addLast(temp, x)
+    final = lt.newList("ARRAY_LIST")
+    for n in lt.iterator(temp):
+        lat = float(((n.split("_"))[1]).replace("p",".").replace("m", "-"))
+        long = float(((n.split("_"))[0]).replace("p",".").replace("m", "-"))
+        posicion = puntos_de_seguimiento(long, lat)
+        ind_id = me.getValue(mp.get(control["mapa_eventos"], posicion))
+        adj = gr.adjacents(control["tracksD"], n)
+        adjacentes = lt.newList("ARRAY_LIST")
+        for x in lt.iterator(adj):
+            lt.addLast(adjacentes, x)
+        y = {
+            "id": n,
+            "long": long,
+            "lat": lat,
+            "individual-id": ind_id["elements"],
+            "nodos adjacentes": adjacentes["elements"]
+        }
+        lt.addLast(final, y)
+    return final["elements"]
 
     
     

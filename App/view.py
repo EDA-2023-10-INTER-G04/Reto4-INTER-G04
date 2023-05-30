@@ -77,6 +77,7 @@ def load_data(control):
     print(x[1])
     print(x[2])
     print(x[3])
+    print(tabulate(x[4], headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
     print(x[5])
 
 

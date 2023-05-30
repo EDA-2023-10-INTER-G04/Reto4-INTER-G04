@@ -98,8 +98,9 @@ def load_data(control, file, memflag=False):
     y = model.anadir_arcos(control)
     edges = y[0]
     gathering = y[1]
-    grafo = control["tracksD"]
+    grafo = model.carga(control)
     model.cantidad_mpts(control)
+    
     # Toma el tiempo al final del proceso
     stop_time = get_time()
     # Calculando la diferencia en tiempo
