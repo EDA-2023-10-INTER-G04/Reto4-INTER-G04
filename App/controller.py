@@ -93,6 +93,8 @@ def load_data(control, file):
     gathering = y[1]
     grafo = control["tracksD"]
     
+    model.cantidad_mpts(control)
+    
     return vertices, MTPs, edges, gathering, grafo
         
         
@@ -124,7 +126,7 @@ def req_1(control, mtp_inicio, mtp_destino):
     Retorna el resultado del requerimiento 1
     """
     req1 = model.req_1(control, mtp_inicio, mtp_destino)
-    return req1[0], req1[1], req1[2], req1[3], req1[4], req1[5]
+    return req1
 
 
 def req_2(control):
@@ -143,13 +145,13 @@ def req_3(control):
     pass
 
 
-def req_4(control):
+def req_4(control, p_origen, p_destino):
     """
     Retorna el resultado del requerimiento 4
     """
-    # TODO: Modificar el requerimiento 4
-    pass
-
+    req4 = model.req_4(control, p_origen, p_destino)
+    return req4
+    #return req4[0], req4[1], req4[2]
 
 def req_5(control):
     """

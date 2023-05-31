@@ -46,6 +46,7 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
+from haversine import haversine, Unit
 import datetime
 import math
 assert cf
@@ -73,6 +74,7 @@ def new_data_structs():
     control["mapa_eventos"] = mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
     control["mapa_arcos"] = mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
     control["mapa_individuos" ]= mp.newMap(numelements=100, maptype="PROBING", loadfactor=0.5)
+    control["mtps"] = lt.newList(datastructure="ARRAY_LIST")
     
     # TracksND = Grafo No Dirigido
     
@@ -85,6 +87,7 @@ def new_data_structs():
 def add_individual(control, info):
     individuo = identificador_compuesto(info["animal-id"], info["tag-id"])
     mp.put(control["mapa_individuos"], individuo, info)
+
 
 def add_data(control, info):
     """
@@ -141,7 +144,6 @@ def anadir_nodos(data_structs):
             MTPs += 1
     tracking_points = gr.numVertices(data_structs["tracksD"])
     return tracking_points, MTPs
-
 
 
 def anadir_arcos(data_structs):
@@ -207,12 +209,20 @@ def anadir_arcos(data_structs):
     edges = gr.numEdges(grafoD)    
     return  edges, gathering_edges
             
-        
-        
+
+def cantidad_mpts(data_structs):
+    
+    mapa_eventos = data_structs["mapa_eventos"]
+    posiciones = mp.keySet(mapa_eventos)
+
+    for posicion in lt.iterator(posiciones):
+        pareja = mp.get(mapa_eventos, posicion)
+        lista = me.getValue(pareja)
+        if lt.size(lista) > 1:
+            lt.addLast(data_structs["mtps"], posicion)
     
 
-    
-    
+
 def puntos_de_seguimiento(longitud, latitud):
     longitud = round(float(longitud), 3)
     latitud = round(float(latitud), 3)
@@ -220,6 +230,7 @@ def puntos_de_seguimiento(longitud, latitud):
     id_comp = (str(longitud)+"_"+str(latitud)).replace(".", "p").replace("-", "m")
     
     return id_comp
+
 
 def identificador_compuesto(individual, tag):
     compuesto = individual+"_"+tag
@@ -304,13 +315,65 @@ def req_3(data_structs):
     pass
 
 
-def req_4(data_structs):
+def req_4(data_structs, p_origen, p_destino):
     """
     Función que soluciona el requerimiento 4
     """
-    # TODO: Realizar el requerimiento 4
-    pass
+    grafoD = data_structs["tracksD"]
+    mtps = data_structs["mtps"]
+    
+    distancia_menor_origen = 1000000000
+    distancia_menor_destino = 1000000000
 
+    lat_origen = float(((p_origen.split("_"))[1]).replace("p",".").replace("m", "-"))
+    long_origen = float(((p_origen.split("_"))[0]).replace("p",".").replace("m", "-"))
+    
+    lat_destino = float(((p_destino.split("_"))[1]).replace("p",".").replace("m", "-"))
+    long_destino = float(((p_destino.split("_"))[0]).replace("p",".").replace("m", "-"))
+
+    for mtp in lt.iterator(mtps):
+        y2 = float(((mtp.split("_"))[1]).replace("p",".").replace("m", "-"))
+        x2 = float(((mtp.split("_"))[0]).replace("p",".").replace("m", "-"))
+        
+        distancia_origen = haversine((lat_origen, long_origen), (y2, x2))
+        
+        if distancia_origen < distancia_menor_origen:
+            distancia_menor_origen = distancia_origen
+            mtp_cercano_inic = mtp
+        
+        distancia_destino = haversine((lat_destino, long_destino), (y2, x2))
+        
+        if distancia_destino < distancia_menor_destino:
+            distancia_menor_destino = distancia_destino
+            mtp_cercano_dest = mtp
+    
+    
+    estructura = djk.Dijkstra(grafoD, "m111p884_57p194")
+    distancia_total = djk.distTo(estructura, "m112p125_57p251")
+    camino = djk.pathTo(estructura, "m112p125_57p251")
+    
+    total_arcos = 0
+    lista_nodos = lt.newList(datastructure="ARRAY_LIST")
+    lista_mtps = lt.newList(datastructure="ARRAY_LIST")
+    
+    for info in lt.iterator(camino):
+        if info["weight"] > 0:
+            total_arcos += 1
+        if info["vertexA"] not in lista_nodos:
+            lt.addLast(lista_nodos, info["vertexA"])
+        if info["vertexB"] not in lista_nodos:
+            lt.addLast(lista_nodos, info["vertexB"])
+        if len(info["vertexA"]) == 15:
+            if info["vertexA"] not in lista_mtps:
+                lt.addLast(lista_mtps, info["vertexA"])
+        if len(info["vertexB"]) == 15:
+            if info["vertexB"] not in lista_mtps:
+                lt.addLast(lista_mtps, info["vertexB"])
+                        
+    total_nodos = lt.size(lista_nodos)
+    total_mtps = lt.size(lista_mtps)
+    
+    return camino, distancia_total, total_nodos, total_mtps
 
 def req_5(data_structs):
     """
