@@ -176,8 +176,38 @@ def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    req4 = controller.req_4(control, "m111p916_57p357", "m111p904_57p435")
+    
+    info = req4[0]
+    lista = []
+    for paso in lt.iterator(info):
+        lista.append(paso)
+        
+    for paso in lista:
+        long_lat = puntos_de_seguimiento_inver(paso["vertexA"])
+        long = long_lat[0]
+        lat = long_lat[1]
+        
+        paso["location-long-aprox"] = long
+        paso["location-lat-aprox"] = lat
+        
+        paso["node-id"] = paso["vertexA"]
+        del paso["vertexA"]
+        paso["edge-to"] = paso["vertexB"]
+        del paso["vertexB"]
+        paso["edge-distance-km"] = paso["weight"]
+        del paso["weight"]
+        
+        ind_id = (paso["node-id"].split("_"))
+        paso["individual-id"] = ind_id
+        
+        if len(paso["individual-id"]) < 4:
+            x = paso["edge-to"].split("_")
+            paso["individual-id"] = x[2] + "_" + x[3]
+        else: 
+            paso["individual-id"] = ind_id[2] + "_" + ind_id[3]
+        
+    print(tabulate(lista, headers="keys", tablefmt="simple_grid", maxcolwidths=20, maxheadercolwidths=20, showindex=False))
 
 
 def print_req_5(control):
