@@ -184,8 +184,20 @@ def print_req_5(control):
     """
         Función que imprime la solución del Requerimiento 5 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 5
-    pass
+    mtp_inicio = input("Inicio: ")
+    dist = int(input("distancia máxima que se puede recorrer:"))
+    minimo = int(input("Mínimo de puntos de encuentro:"))
+    print ("¿Desea visualizar el uso de memoria?")
+    print ("1 - Si")
+    print ("2 - No")
+
+    mem = int(input("escriba la opción:"))
+    tabla,dato = controller.req_5(control, mtp_inicio, dist, minimo, mem)
+    if mem== 1:
+        
+        print("La memoria que ocupó fue de " + str(dato) + " kb")
+    else: 
+        print("El tiempo que tomó fue de " + str(dato) + " ms")
 
 
 def print_req_6(control):

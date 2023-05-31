@@ -46,6 +46,7 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
+from DISClib.Utils import error as error
 import datetime
 import math
 assert cf
@@ -556,12 +557,47 @@ def req_4(data_structs):
     pass
 
 
-def req_5(data_structs):
+def req_5(data_structs, inicio, distancia, puntos):
     """
     Función que soluciona el requerimiento 5
     """
-    # TODO: Realizar el requerimiento 5
-    pass
+    try:
+        graph = data_structs["tracksD"]
+        graph_prueba = data_structs["grafo_5D"]
+        real_graph = data_structs["grafo_5"]
+        grafo = prim.PrimMST(graph, inicio)
+        lista = mp.valueSet(grafo["edgeTo"])
+        for vertice in lt.iterator(lista):
+            if not(gr.containsVertex(graph_prueba, vertice["vertexA"])):
+                    gr.insertVertex(graph_prueba, vertice["vertexA"])
+            if not(gr.containsVertex(graph_prueba, vertice["vertexB"])):
+                    gr.insertVertex(graph_prueba, vertice["vertexB"])
+            
+            if gr.getEdge(graph_prueba, vertice["vertexA"], vertice["vertexB"]) == None:
+                gr.addEdge(graph_prueba, vertice["vertexA"], vertice["vertexB"], vertice["weight"])
+        defe = dfs.DepthFirstSearch(graph_prueba, inicio)
+        
+        #hacer dfs, iterar cada posible vertice al que puede llegar, pedir la ruta y revisar en el valueset la suma de los arcos para llegar (while con ambos menor a distancia y que no haya llegado al vertice destino). Si cumple el limite de distancia guardar en una pq o algo y encontrar el mayor. Luego magia para sacar el numero del vertice cuyo peso se le atribuye a tal distancia.
+        for vertice in (defe["visited"]["table"]["elements"]):
+            if vertice !=None:
+                contador = 0
+                print (vertice)
+                revisar = vertice["key"]
+                pila = dfs.pathTo(defe, revisar)
+                
+                for each in lt.iterator(pila):
+                    for vertice in lt.iterator(lista):
+                        if each == vertice["vertexB"]:
+                            contador += vertice["weight"]
+                            
+                    if contador < distancia :
+                        min_pila = each
+                        
+            else:
+                continue
+        return min_pila
+    except Exception as exp:
+        error.reraise(exp, 'model:req_5')
 
 
 def req_6(data_structs):
