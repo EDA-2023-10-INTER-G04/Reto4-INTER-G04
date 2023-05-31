@@ -553,8 +553,61 @@ def req_4(data_structs):
     """
     Función que soluciona el requerimiento 4
     """
-    # TODO: Realizar el requerimiento 4
-    pass
+    grafoD = data_structs["tracksD"]
+    mtps = data_structs["mtps"]
+    
+    distancia_menor_origen = 1000000000
+    distancia_menor_destino = 1000000000
+
+    lat_origen = float(((p_origen.split("_"))[1]).replace("p",".").replace("m", "-"))
+    long_origen = float(((p_origen.split("_"))[0]).replace("p",".").replace("m", "-"))
+    
+    lat_destino = float(((p_destino.split("_"))[1]).replace("p",".").replace("m", "-"))
+    long_destino = float(((p_destino.split("_"))[0]).replace("p",".").replace("m", "-"))
+
+    for mtp in lt.iterator(mtps):
+        y2 = float(((mtp.split("_"))[1]).replace("p",".").replace("m", "-"))
+        x2 = float(((mtp.split("_"))[0]).replace("p",".").replace("m", "-"))
+        
+        distancia_origen = haversine((lat_origen, long_origen), (y2, x2))
+        
+        if distancia_origen < distancia_menor_origen:
+            distancia_menor_origen = distancia_origen
+            mtp_cercano_inic = mtp
+        
+        distancia_destino = haversine((lat_destino, long_destino), (y2, x2))
+        
+        if distancia_destino < distancia_menor_destino:
+            distancia_menor_destino = distancia_destino
+            mtp_cercano_dest = mtp
+    
+    
+    estructura = djk.Dijkstra(grafoD, "m111p884_57p194")
+    distancia_total = djk.distTo(estructura, "m112p125_57p251")
+    camino = djk.pathTo(estructura, "m112p125_57p251")
+    
+    total_arcos = 0
+    lista_nodos = lt.newList(datastructure="ARRAY_LIST")
+    lista_mtps = lt.newList(datastructure="ARRAY_LIST")
+    
+    for info in lt.iterator(camino):
+        if info["weight"] > 0:
+            total_arcos += 1
+        if info["vertexA"] not in lista_nodos:
+            lt.addLast(lista_nodos, info["vertexA"])
+        if info["vertexB"] not in lista_nodos:
+            lt.addLast(lista_nodos, info["vertexB"])
+        if len(info["vertexA"]) == 15:
+            if info["vertexA"] not in lista_mtps:
+                lt.addLast(lista_mtps, info["vertexA"])
+        if len(info["vertexB"]) == 15:
+            if info["vertexB"] not in lista_mtps:
+                lt.addLast(lista_mtps, info["vertexB"])
+                        
+    total_nodos = lt.size(lista_nodos)
+    total_mtps = lt.size(lista_mtps)
+    
+    return camino, distancia_total, total_nodos, total_mtps
 
 
 def req_5(data_structs, inicio, distancia, puntos):
