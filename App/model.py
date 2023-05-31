@@ -550,7 +550,7 @@ def req_3(data_structs):
     return entrega, total_componentes
 
 
-def req_4(data_structs):
+def req_4(data_structs, p_origen, p_destino):
     """
     Función que soluciona el requerimiento 4
     """

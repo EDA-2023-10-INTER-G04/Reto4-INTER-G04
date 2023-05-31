@@ -207,12 +207,12 @@ def req_3(control, memflag= False):
     return x, mensaje
 
 
-def req_4(control):
+def req_4(control, p_origen, p_destino):
     """
     Retorna el resultado del requerimiento 4
     """
-    # TODO: Modificar el requerimiento 4
-    pass
+    req4 = model.req_4(control, p_origen, p_destino)
+    return req4
 
 
 def req_5(control, inicio, distancia, puntos, mem):
